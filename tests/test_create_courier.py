@@ -4,7 +4,7 @@ import allure
 import pytest
 import requests
 from api.couriers import CourierApi
-from api.urls import Urls
+from tests.urls import Urls
 import data
 
 # метод генерирует строку, состоящую только из букв нижнего регистра, в качестве параметра передаём длину строки

@@ -1,6 +1,6 @@
 import allure
 import requests
-from api.urls import *
+from tests.urls import *
 
 
 class CourierApi:
