@@ -1,59 +1,56 @@
 import allure
 import pytest
 from api.couriers import CourierApi
+from tests import data
 
-# Примеры данных для курьерских запросов
-COURIER_DATA_VALID = {
-    'login': 'valid_courier',
-    'password': 'valid_password'
-}
 
-COURIER_DATA_NOT_FOUND = {
-    'login': 'not_found',
-    'password': 'any_password'
-}
-
-COURIER_DATA_MISSING_LOGIN = {
-    'password': 'some_password'
-}
-
-COURIER_DATA_EMPTY_LOGIN = {
-    'login': '',
-    'password': 'some_password'
-}
-
-COURIER_DATA_EMPTY_PASSWORD = {
-    'login': 'some_login',
-    'password': ''
-}
 @allure.suite('Тесты авторизации')
 class TestCourierAuthentication:
-    @allure.title('Successful courier login.')
-    @allure.description('Verify successful courier login returns status 200 and a valid ID in the response body.')
+    @allure.title('Залогин курьером с валидными данными')
+    @allure.description(
+        'Проверяем, что валидный запрос на логин существующего курьера возвращает код 200 и id в теле ответа')
     def test_courier_login_success(self):
-        CourierApi.create_courier(COURIER_DATA_VALID)
-        response = CourierApi.login_courier(COURIER_DATA_VALID)
+        payload = data.COURIER_DATA_VALID
+        CourierApi.create_courier(payload)
+        response = CourierApi.login_courier(payload)
         courier_id = response.json()['id']
-
         assert response.status_code == 200
         assert courier_id is not None
         assert courier_id > 0
+        CourierApi.delete_courier(courier_id)
 
     @allure.title('Запрос на авторизацию несуществующим курьером')
-    @allure.description('Проверяем, что запрос на вход несуществующим курьером вернет код 404 и ожидаемым текстом в теле ответа')
+    @allure.description(
+        'Проверяем, что запрос на вход несуществующим курьером вернет код 404 и ожидаемым текстом в теле ответа')
     def test_courier_not_found(self):
-        response = CourierApi.login_courier(COURIER_DATA_NOT_FOUND)
-
+        response = CourierApi.login_courier(data.COURIER_DATA_VALID)
         assert response.status_code == 404
         assert response.json()['message'] == 'Учетная запись не найдена'
 
     @allure.title('Запрос на логин без обязательного параметра')
-    @allure.description('Проверяем, что запрос на логин без обязательного параметра вернет код 400 и ожидаемым текстом в теле ответа')
-    @pytest.mark.parametrize("body", [COURIER_DATA_MISSING_LOGIN,
-                                      COURIER_DATA_EMPTY_LOGIN,
-                                      COURIER_DATA_EMPTY_PASSWORD])
-    def test_courier_login_bad_request(self, body):
-        response = CourierApi.login_courier(body)
-
+    @allure.description(
+        'Проверяем, что запрос на логин без обязательного параметра вернет код 400 и ожидаемым текстом в теле ответа')
+    @pytest.mark.parametrize(
+        'payload',
+        (
+            pytest.param(data.COURIER_EMPTY_LOGIN, id='empty_login'),
+            pytest.param(data.COURIER_WITHOUT_LOGIN, id='without_login'),
+            pytest.param(data.COURIER_WITHOUT_PASSWORD, id='without_password'),
+            pytest.param(data.COURIER_EMPTY_PASSWORD, id='empty_password')
+        ),
+    )
+    @pytest.mark.parametrize(
+        'should_create_courier',
+        (
+            pytest.param(True, id='courier_exists'),
+            pytest.param(False, id='courier_doesnt_exists')
+        ),
+    )
+    def test_courier_login_bad_request(self, payload, should_create_courier):
+        if should_create_courier:
+            CourierApi.create_courier(payload)
+        response = CourierApi.login_courier(payload)
         assert response.status_code == 400
         assert response.json()['message'] == 'Недостаточно данных для входа'
+        if should_create_courier:
+            CourierApi.delete_courier_by_payload(payload)

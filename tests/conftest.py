@@ -1,23 +1,23 @@
 import pytest
 
-from tests.test_create_courier import register_new_courier_and_return_login_password, \
-    generate_random_string_for_test_data
+from tests.test_create_courier import register_new_courier_and_return_login_password, generate_random_string
 
 
 @pytest.fixture
 def courier():
     return {
-        'login': generate_random_string_for_test_data(10),
-        'password': generate_random_string_for_test_data(10),
-        'firstName': generate_random_string_for_test_data(10)
+        'login': generate_random_string(10),
+        'password': generate_random_string(10),
+        'firstName': generate_random_string(10)
     }
 
 
 @pytest.fixture
 def existing_courier():
-    login, password, firstName = register_new_courier_and_return_login_password()
+    payload = register_new_courier_and_return_login_password()
     return {
-        'login': login,
-        'password': password,
-        'firstName': firstName
+        'login': payload[0],
+        'password': payload[1],
+        'firstName': payload[2]
     }
+
