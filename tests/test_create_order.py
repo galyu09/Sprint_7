@@ -1,10 +1,11 @@
 import allure
 import pytest
-from api.orders import OrdersApi
+
+from api_test import OrdersApi
 from tests import data
 
 
-# Генерим строку для логина/пароля/имени
+@allure.step('Генерим строку для логина/пароля/имени')
 def create_random_string(length=10):
     import random
     import string

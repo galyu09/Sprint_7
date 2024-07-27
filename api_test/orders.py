@@ -1,4 +1,5 @@
 import allure
+import pytest
 import requests
 from tests.urls import *
 

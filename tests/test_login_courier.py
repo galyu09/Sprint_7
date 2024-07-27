@@ -1,6 +1,7 @@
 import allure
 import pytest
-from api.couriers import CourierApi
+
+from api_test.couriers import CourierApi
 from tests import data
 
 
@@ -48,7 +49,7 @@ class TestCourierAuthentication:
     )
     def test_courier_login_bad_request(self, payload, should_create_courier):
         if should_create_courier:
-            CourierApi.create_courier(payload)
+            CourierApi.create_courier(data.COURIER_DATA_VALID)
         response = CourierApi.login_courier(payload)
         assert response.status_code == 400
         assert response.json()['message'] == 'Недостаточно данных для входа'

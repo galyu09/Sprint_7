@@ -1,13 +1,13 @@
 #
 COURIER_EMPTY_LOGIN = {'login': '', 'password': 'password'}
 COURIER_WITHOUT_LOGIN = {'password': 'password'}
-COURIER_WITHOUT_PASSWORD = {'login': 'login'}
+COURIER_WITHOUT_PASSWORD = {'login': 'login', 'password': ''}
 COURIER_EMPTY_PASSWORD = {'login': 'login', 'password': ''}
 
 
 # Примеры данных для курьерских запросов
 COURIER_DATA_VALID = {
-    'login': 'login',
+    'login': 'Galina_qa_sprint_7',
     'password': 'password'
 }
 

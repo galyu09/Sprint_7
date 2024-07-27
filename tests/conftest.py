@@ -1,6 +1,8 @@
 import pytest
+import allure
+import pytest
 
-from tests.test_create_courier import register_new_courier_and_return_login_password, generate_random_string
+from user_generate import generate_random_string, register_new_courier_and_return_login_password
 
 
 @pytest.fixture

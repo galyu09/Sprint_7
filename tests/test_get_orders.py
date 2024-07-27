@@ -1,5 +1,6 @@
 import allure
-from api.orders import OrdersApi
+
+from api_test.orders import OrdersApi
 
 
 class TestOrderRetrieval:
